@@ -1,0 +1,18 @@
+<android.support.v4.view.ViewPager
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/pager"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="org.lucasr.customlayout.async.app.MainActivity">
+
+    <android.support.v4.view.PagerTitleStrip
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:layout_gravity="top"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:background="#dddddd"
+        android:gravity="bottom"/>
+
+</android.support.v4.view.ViewPager>

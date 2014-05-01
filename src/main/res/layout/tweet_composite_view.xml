@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/profile_image"
+        android:layout_width="@dimen/tweet_profile_image_size"
+        android:layout_height="@dimen/tweet_profile_image_size"
+        android:layout_marginRight="@dimen/tweet_content_margin"
+        android:scaleType="centerCrop"/>
+
+    <TextView
+        android:id="@+id/author_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/profile_image"
+        android:layout_alignTop="@id/profile_image"
+        android:textColor="@color/tweet_author_text_color"
+        android:textSize="@dimen/tweet_author_text_size"
+        android:singleLine="true"/>
+
+    <TextView
+        android:id="@+id/message_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/author_text"
+        android:layout_alignLeft="@id/author_text"
+        android:textColor="@color/tweet_message_text_color"
+        android:textSize="@dimen/tweet_message_text_size"/>
+
+    <ImageView
+        android:id="@+id/post_image"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/tweet_post_image_height"
+        android:layout_below="@id/message_text"
+        android:layout_alignLeft="@id/message_text"
+        android:layout_marginTop="@dimen/tweet_content_margin"
+        android:scaleType="centerCrop"/>
+
+    <ImageView
+        android:id="@+id/reply_action"
+        android:layout_width="@dimen/tweet_icon_image_size"
+        android:layout_height="@dimen/tweet_icon_image_size"
+        android:layout_marginTop="@dimen/tweet_content_margin"
+        android:layout_below="@id/post_image"
+        android:layout_alignLeft="@id/message_text"
+        android:src="@drawable/tweet_reply"
+        android:scaleType="centerCrop"/>
+
+    <ImageView
+        android:id="@+id/retweet_action"
+        android:layout_width="@dimen/tweet_icon_image_size"
+        android:layout_height="@dimen/tweet_icon_image_size"
+        android:layout_marginLeft="@dimen/tweet_icon_margin"
+        android:layout_toRightOf="@id/reply_action"
+        android:layout_alignTop="@id/reply_action"
+        android:src="@drawable/tweet_retweet"
+        android:scaleType="centerCrop"/>
+
+    <ImageView
+        android:id="@+id/favourite_action"
+        android:layout_width="@dimen/tweet_icon_image_size"
+        android:layout_height="@dimen/tweet_icon_image_size"
+        android:layout_marginLeft="@dimen/tweet_icon_margin"
+        android:layout_toRightOf="@id/retweet_action"
+        android:layout_alignTop="@id/retweet_action"
+        android:src="@drawable/tweet_favourite"
+        android:scaleType="centerCrop"/>
+
+</merge>
