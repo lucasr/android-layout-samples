@@ -54,12 +54,12 @@ public class TweetsListView extends AsyncListView {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
         getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
             @Override
+            @SuppressWarnings("deprecation")
             public void onGlobalLayout() {
                 updateTargetWidth();
                 updateItemLoader();
