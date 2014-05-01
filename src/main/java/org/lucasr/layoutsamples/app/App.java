@@ -3,18 +3,18 @@ package org.lucasr.layoutsamples.app;
 import android.app.Application;
 import android.content.Context;
 
-import org.lucasr.layoutsamples.async.ElementCache;
+import org.lucasr.layoutsamples.async.UIElementCache;
 
 public class App extends Application {
-    private ElementCache mElementCache;
+    private UIElementCache mElementCache;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mElementCache = new ElementCache();
+        mElementCache = new UIElementCache();
     }
 
-    public ElementCache getElementCache() {
+    public UIElementCache getElementCache() {
         return mElementCache;
     }
 

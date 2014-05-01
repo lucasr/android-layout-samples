@@ -17,22 +17,17 @@
 package org.lucasr.layoutsamples.async;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Adapter;
 
 import org.lucasr.layoutsamples.adapter.Tweet;
 import org.lucasr.layoutsamples.app.App;
-import org.lucasr.layoutsamples.async.AsyncTweetElementFactory;
-import org.lucasr.layoutsamples.async.ElementCache;
 import org.lucasr.layoutsamples.canvas.UIElement;
 import org.lucasr.smoothie.SimpleItemLoader;
 
 public class TweetsLayoutLoader extends SimpleItemLoader<Tweet, UIElement> {
     private final Context mContext;
-    private final ElementCache mElementCache;
+    private final UIElementCache mElementCache;
 
     public TweetsLayoutLoader(Context context) {
         mContext = context;

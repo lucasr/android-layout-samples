@@ -31,7 +31,7 @@ public class AsyncTweetElementFactory {
     }
 
     public static AsyncTweetElement create(Context context, Tweet tweet) {
-        ElementCache elementCache = App.getInstance(context).getElementCache();
+        UIElementCache elementCache = App.getInstance(context).getElementCache();
 
         final int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(sTargetWidth,
                 View.MeasureSpec.EXACTLY);
