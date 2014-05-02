@@ -15,7 +15,7 @@ public class TweetsListView extends AsyncListView {
     private int mPresenterId;
 
     public TweetsListView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        this(context, attrs, android.R.attr.listViewStyle);
     }
 
     public TweetsListView(Context context, AttributeSet attrs, int defStyle) {
