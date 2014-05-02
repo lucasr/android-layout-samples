@@ -17,7 +17,6 @@
 package org.lucasr.layoutsamples.widget;
 
 import android.content.res.Resources;
-import android.text.Html;
 import android.text.Layout;
 import android.text.TextUtils;
 import android.view.View;
@@ -216,8 +215,8 @@ public class TweetElement extends ElementGroup implements TweetPresenter {
 
     @Override
     public void update(Tweet tweet, EnumSet<UpdateFlags> flags) {
-        mMessageText.setText(Html.fromHtml(tweet.getMessage()));
         mAuthorText.setText(tweet.getAuthorName());
+        mMessageText.setText(tweet.getMessage());
 
         loadProfileImage(tweet, flags);
 

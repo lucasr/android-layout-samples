@@ -18,8 +18,6 @@ package org.lucasr.layoutsamples.widget;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -27,8 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import org.lucasr.layoutsamples.adapter.Tweet;
 import org.lucasr.layoutsamples.adapter.TweetPresenter;
@@ -190,7 +186,7 @@ public class TweetLayoutView extends ViewGroup implements TweetPresenter {
     @Override
     public void update(Tweet tweet, EnumSet<UpdateFlags> flags) {
         mAuthorText.setText(tweet.getAuthorName());
-        mMessageText.setText(Html.fromHtml(tweet.getMessage()));
+        mMessageText.setText(tweet.getMessage());
 
         final Context context = getContext();
         ImageUtils.loadImage(context, mProfileImage, tweet.getProfileImageUrl(), flags);
