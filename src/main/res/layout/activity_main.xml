@@ -8,9 +8,11 @@
 
     <android.support.v4.view.PagerTitleStrip
         android:layout_width="fill_parent"
-        android:layout_height="32dp"
+        android:layout_height="@dimen/titlestrip_height"
         android:layout_gravity="top"
-        android:background="#dddddd"
-        android:gravity="center_vertical"/>
+        android:background="@color/titlestrip_background_color"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/titlestrip_text_size"
+        android:textColor="@color/titlestrip_text_color"/>
 
 </android.support.v4.view.ViewPager>

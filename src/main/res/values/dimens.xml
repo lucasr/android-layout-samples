@@ -3,6 +3,9 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="titlestrip_height">32dp</dimen>
+    <dimen name="titlestrip_text_size">16sp</dimen>
+
     <dimen name="tweet_author_text_size">16sp</dimen>
     <dimen name="tweet_message_text_size">16sp</dimen>
 

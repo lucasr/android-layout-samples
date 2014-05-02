@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="tweet_author_text_color">#666666</color>
-    <color name="tweet_message_text_color">#000000</color>
+    <color name="actionbar_color">#3FBA91</color>
+
+    <color name="titlestrip_background_color">#DEDEDE</color>
+    <color name="titlestrip_text_color">#999999</color>
+
+    <color name="tweet_author_text_color">#999999</color>
+    <color name="tweet_message_text_color">#333333</color>
 
     <color name="tweet_on_main_thread">#FF0000</color>
     <color name="tweet_off_main_thread">#66CD00</color>
