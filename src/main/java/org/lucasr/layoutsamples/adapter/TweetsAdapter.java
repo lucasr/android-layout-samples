@@ -34,24 +34,28 @@ import java.util.List;
 public class TweetsAdapter extends BaseAdapter {
     private final Context mContext;
     private int mPresenterId;
-    private final List<Tweet> mEntries;
+
+    private static List<Tweet> sEntries;
 
     public TweetsAdapter(Context context, int presenterId) {
         mContext = context;
         mPresenterId = presenterId;
-
-        mEntries = new ArrayList<Tweet>();
         loadFromResource(R.raw.tweets);
     }
 
     private void loadFromResource(int resID) {
+        if (sEntries != null) {
+            return;
+        }
+
         try {
             final JSONArray tweets = RawResource.getAsJSON(mContext, resID);
+            sEntries = new ArrayList<Tweet>(tweets.length());
 
             final int count = tweets.length();
             for (int i = 0; i < count; i++) {
                 final JSONObject tweet = (JSONObject) tweets.get(i);
-                mEntries.add(new Tweet(tweet));
+                sEntries.add(new Tweet(tweet));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -60,12 +64,12 @@ public class TweetsAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mEntries.size();
+        return sEntries.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return mEntries.get(position);
+        return sEntries.get(position);
     }
 
     @Override
@@ -85,7 +89,7 @@ public class TweetsAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return mEntries.get(position).getId();
+        return sEntries.get(position).getId();
     }
 
     @Override
