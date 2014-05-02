@@ -27,16 +27,9 @@ public class AsyncTweetView extends UIElementView implements TweetPresenter {
     public void update(Tweet tweet, EnumSet<UpdateFlags> flags) {
         mTweet = tweet;
 
-        final Context context = getContext();
-
-        AsyncTweetElement element =
-                (AsyncTweetElement) App.getInstance(context).getElementCache().get(tweet.getId());
-
-        if (element == null) {
-            element = AsyncTweetElementFactory.create(context, tweet);
-        }
-        setUIElement(element);
-
+        final AsyncTweetElement element = AsyncTweetElementFactory.create(getContext(), tweet);
         element.update(tweet, flags);
+
+        setUIElement(element);
     }
 }

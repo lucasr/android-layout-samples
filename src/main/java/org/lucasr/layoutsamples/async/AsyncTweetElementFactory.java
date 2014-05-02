@@ -30,8 +30,13 @@ public class AsyncTweetElementFactory {
         sHeadlessHost.setTargetWidth(targetWidth);
     }
 
-    public static AsyncTweetElement create(Context context, Tweet tweet) {
+    public synchronized static AsyncTweetElement create(Context context, Tweet tweet) {
         UIElementCache elementCache = App.getInstance(context).getElementCache();
+
+        AsyncTweetElement asyncElement = (AsyncTweetElement) elementCache.get(tweet.getId());
+        if (asyncElement != null) {
+            return asyncElement;
+        }
 
         final int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(sTargetWidth,
                 View.MeasureSpec.EXACTLY);
@@ -43,7 +48,7 @@ public class AsyncTweetElementFactory {
         element.measure(widthMeasureSpec, heightMeasureSpec);
         element.layout(0, 0, element.getMeasuredWidth(), element.getMeasuredHeight());
 
-        final AsyncTweetElement asyncElement = new AsyncTweetElement(element, sHeadlessHost);
+        asyncElement = new AsyncTweetElement(element, sHeadlessHost);
         elementCache.put(tweet.getId(), asyncElement);
 
         return asyncElement;
