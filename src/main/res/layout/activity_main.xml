@@ -8,11 +8,9 @@
 
     <android.support.v4.view.PagerTitleStrip
         android:layout_width="fill_parent"
-        android:layout_height="48dp"
+        android:layout_height="32dp"
         android:layout_gravity="top"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:background="#dddddd"
-        android:gravity="bottom"/>
+        android:gravity="center_vertical"/>
 
 </android.support.v4.view.ViewPager>
