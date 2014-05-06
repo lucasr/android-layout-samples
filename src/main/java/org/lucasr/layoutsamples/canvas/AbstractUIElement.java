@@ -35,10 +35,6 @@ public abstract class AbstractUIElement implements UIElement {
 
     public AbstractUIElement(UIElementHost host) {
         swapHost(host);
-        init();
-    }
-
-    protected void init() {
     }
 
     protected void onAttachedToHost() {

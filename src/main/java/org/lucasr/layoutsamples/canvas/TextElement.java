@@ -58,11 +58,6 @@ public class TextElement extends AbstractUIElement {
 
     public TextElement(UIElementHost host) {
         super(host);
-    }
-
-    @Override
-    protected void init() {
-        super.init();
         setTextColor(ColorStateList.valueOf(0xFF000000));
     }
 

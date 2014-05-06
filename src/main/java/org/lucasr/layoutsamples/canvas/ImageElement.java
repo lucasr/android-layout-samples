@@ -37,7 +37,7 @@ public class ImageElement extends AbstractUIElement implements Drawable.Callback
     private int mDrawableWidth;
     private int mDrawableHeight;
 
-    private Matrix mMatrix;
+    private final Matrix mMatrix;
     private Matrix mDrawMatrix;
 
     private RectF mTempSrc = new RectF();
@@ -48,11 +48,6 @@ public class ImageElement extends AbstractUIElement implements Drawable.Callback
 
     public ImageElement(UIElementHost host) {
         super(host);
-    }
-
-    @Override
-    protected void init() {
-        super.init();
         mMatrix = new Matrix();
         mScaleType = ScaleType.FIT_CENTER;
     }

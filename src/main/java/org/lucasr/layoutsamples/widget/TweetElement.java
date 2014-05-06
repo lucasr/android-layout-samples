@@ -54,11 +54,6 @@ public class TweetElement extends ElementGroup implements TweetPresenter {
 
     public TweetElement(UIElementHost host) {
         super(host);
-    }
-
-    @Override
-    protected void init() {
-        super.init();
 
         final Resources res = getResources();
 

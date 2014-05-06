@@ -28,15 +28,10 @@ public abstract class ElementGroup extends AbstractUIElement {
         TEXT
     }
 
-    private List<UIElement> mElements;
+    private final List<UIElement> mElements;
 
     public ElementGroup(UIElementHost host) {
         super(host);
-    }
-
-    @Override
-    protected void init() {
-        super.init();
         mElements = new ArrayList<UIElement>();
     }
 
