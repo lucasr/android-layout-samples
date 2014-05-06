@@ -66,26 +66,30 @@ public class TweetElement extends ElementGroup implements TweetPresenter {
         int padding = res.getDimensionPixelOffset(R.dimen.tweet_padding);
         setPadding(padding, padding, padding, padding);
 
-        mProfileImage = (ImageElement) addElement(UIElementType.IMAGE);
+        mProfileImage = new ImageElement(host);
         mProfileImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
         mProfileImageTarget = new ImageElementTarget(res, mProfileImage);
+        addElement(mProfileImage);
 
-        mAuthorText = (TextElement) addElement(UIElementType.TEXT);
+        mAuthorText = new TextElement(host);
         mAuthorText.setRawTextSize(res.getDimensionPixelSize(R.dimen.tweet_author_text_size));
         mAuthorText.setTextAlignment(Layout.Alignment.ALIGN_NORMAL);
         mAuthorText.setTextColor(res.getColor(R.color.tweet_author_text_color));
+        addElement(mAuthorText);
 
-        mMessageText = (TextElement) addElement(UIElementType.TEXT);
+        mMessageText = new TextElement(host);
         mMessageText.setRawTextSize(res.getDimensionPixelSize(R.dimen.tweet_message_text_size));
         mMessageText.setTextColor(res.getColor(R.color.tweet_message_text_color));
+        addElement(mMessageText);
 
-        mPostImage = (ImageElement) addElement(UIElementType.IMAGE);
+        mPostImage = new ImageElement(host);
         mPostImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
         mPostImageTarget = new ImageElementTarget(res, mPostImage);
+        addElement(mPostImage);
 
         mActionIcons = new EnumMap(Action.class);
         for (Action action : Action.values()) {
-            ImageElement icon = (ImageElement) addElement(UIElementType.IMAGE);
+            final ImageElement icon = new ImageElement(host);
             icon.setScaleType(ImageView.ScaleType.FIT_XY);
 
             switch (action) {
@@ -103,6 +107,7 @@ public class TweetElement extends ElementGroup implements TweetPresenter {
             }
 
             mActionIcons.put(action, icon);
+            addElement(icon);
         }
     }
 

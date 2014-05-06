@@ -23,11 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ElementGroup extends AbstractUIElement {
-    protected enum UIElementType {
-        IMAGE,
-        TEXT
-    }
-
     private final List<UIElement> mElements;
 
     public ElementGroup(UIElementHost host) {
@@ -93,25 +88,9 @@ public abstract class ElementGroup extends AbstractUIElement {
         }
     }
 
-    protected UIElement addElement(UIElementType type) {
-        final UIElement element;
-        switch (type) {
-            case IMAGE:
-                element = new ImageElement(mHost);
-                break;
-
-            case TEXT:
-                element = new TextElement(mHost);
-                break;
-
-            default:
-                throw new IllegalArgumentException("Unrecognized UI element type");
-        }
-
+    protected void addElement(UIElement element) {
         mElements.add(element);
         requestLayout();
-
-        return element;
     }
 
     protected void removeElement(UIElement element) {
