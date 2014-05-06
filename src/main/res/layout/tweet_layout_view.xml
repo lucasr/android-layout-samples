@@ -54,22 +54,20 @@
         android:layout_width="@dimen/tweet_icon_image_size"
         android:layout_height="@dimen/tweet_icon_image_size"
         android:src="@drawable/tweet_reply"
-        android:scaleType="centerCrop"/>
+        android:scaleType="fitStart"/>
 
     <ImageView
         android:id="@+id/retweet_action"
         android:layout_width="@dimen/tweet_icon_image_size"
         android:layout_height="@dimen/tweet_icon_image_size"
-        android:layout_marginLeft="@dimen/tweet_icon_margin"
         android:src="@drawable/tweet_retweet"
-        android:scaleType="centerCrop"/>
+        android:scaleType="fitStart"/>
 
     <ImageView
         android:id="@+id/favourite_action"
         android:layout_width="@dimen/tweet_icon_image_size"
         android:layout_height="@dimen/tweet_icon_image_size"
-        android:layout_marginLeft="@dimen/tweet_icon_margin"
         android:src="@drawable/tweet_favourite"
-        android:scaleType="centerCrop"/>
+        android:scaleType="fitStart"/>
 
 </merge>

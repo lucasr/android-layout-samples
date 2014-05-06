@@ -117,7 +117,7 @@ public class TweetLayoutView extends ViewGroup implements TweetPresenter {
         measureChildWithMargins(mProfileImage,
                                 widthMeasureSpec, widthUsed,
                                 heightMeasureSpec, heightUsed);
-        widthUsed += getMeasuredHeightWithMargins(mProfileImage);
+        widthUsed += getMeasuredWidthWithMargins(mProfileImage);
 
         measureChildWithMargins(mAuthorText,
                                 widthMeasureSpec, widthUsed,
@@ -148,12 +148,11 @@ public class TweetLayoutView extends ViewGroup implements TweetPresenter {
                 maxIconHeight = height;
             }
 
-            widthUsed += getMeasuredHeightWithMargins(iconView);
+            widthUsed += getMeasuredWidthWithMargins(iconView);
         }
         heightUsed += maxIconHeight;
 
-        final int width = widthSize + getPaddingLeft() + getPaddingRight();
-        setMeasuredDimension(width, heightUsed);
+        setMeasuredDimension(widthSize, heightUsed);
     }
 
     @Override
@@ -168,33 +167,32 @@ public class TweetLayoutView extends ViewGroup implements TweetPresenter {
                    mProfileImage.getMeasuredHeight());
 
         final int contentLeft = getWidthWithMargins(mProfileImage) + paddingLeft;
+        final int contentWidth = r - l - contentLeft - getPaddingRight();
 
         layoutView(mAuthorText, contentLeft, top,
-                   mAuthorText.getMeasuredWidth(),
-                   mAuthorText.getMeasuredHeight());
+                   contentWidth, mAuthorText.getMeasuredHeight());
         top += getHeightWithMargins(mAuthorText);
 
         layoutView(mMessageText, contentLeft, top,
-                   mMessageText.getMeasuredWidth(),
-                   mMessageText.getMeasuredHeight());
+                   contentWidth, mMessageText.getMeasuredHeight());
         top += getHeightWithMargins(mMessageText);
 
         if (mPostImage.getVisibility() != View.GONE) {
             layoutView(mPostImage, contentLeft, top,
-                       mPostImage.getMeasuredWidth(),
-                       mPostImage.getMeasuredHeight());
+                       contentWidth, mPostImage.getMeasuredHeight());
 
             top += getHeightWithMargins(mPostImage);
         }
 
+        final int iconsWidth = contentWidth / mActionIcons.size();
         int iconsLeft = contentLeft;
+
         for (Action action : Action.values()) {
             final ImageView icon = mActionIcons.get(action);
 
             layoutView(icon, iconsLeft, top,
-                       icon.getMeasuredWidth(),
-                       icon.getMeasuredHeight());
-            iconsLeft += getWidthWithMargins(icon);
+                       iconsWidth, icon.getMeasuredHeight());
+            iconsLeft += iconsWidth;
         }
     }
 
