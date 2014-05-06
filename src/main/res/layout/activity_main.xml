@@ -20,7 +20,7 @@
     android:id="@+id/pager"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.lucasr.customlayout.async.app.MainActivity">
+    tools:context="org.lucasr.layoutsamples.app.MainActivity">
 
     <android.support.v4.view.PagerTitleStrip
         android:layout_width="fill_parent"

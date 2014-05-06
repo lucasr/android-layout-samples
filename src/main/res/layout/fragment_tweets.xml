@@ -20,4 +20,4 @@
     android:id="@+id/list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.lucasr.transition.samples.MainActivity"/>
+    tools:context="org.lucasr.layoutsamples.app.MainActivity"/>
