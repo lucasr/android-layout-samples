@@ -41,25 +41,12 @@ public class TweetLayoutView extends ViewGroup implements TweetPresenter {
     private final ImageView mPostImage;
     private final EnumMap<Action, ImageView> mActionIcons;
 
-    private final int mPostImageHeight;
-    private final int mProfileImageSize;
-    private final int mIconImageSize;
-    private final int mIconMargin;
-    private final int mContentMargin;
-
     public TweetLayoutView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
     public TweetLayoutView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
-        final Resources res = getResources();
-        mPostImageHeight = res.getDimensionPixelSize(R.dimen.tweet_post_image_height);
-        mProfileImageSize = res.getDimensionPixelSize(R.dimen.tweet_profile_image_size);
-        mIconImageSize = res.getDimensionPixelSize(R.dimen.tweet_icon_image_size);
-        mIconMargin = res.getDimensionPixelSize(R.dimen.tweet_icon_margin);
-        mContentMargin = res.getDimensionPixelSize(R.dimen.tweet_content_margin);
 
         LayoutInflater.from(context).inflate(R.layout.tweet_layout_view, this, true);
         mProfileImage = (ImageView) findViewById(R.id.profile_image);
@@ -92,48 +79,81 @@ public class TweetLayoutView extends ViewGroup implements TweetPresenter {
     }
 
     private void layoutView(View view, int left, int top, int width, int height) {
-        view.layout(left, top, left + width, top + height);
+        MarginLayoutParams margins = (MarginLayoutParams) view.getLayoutParams();
+        final int leftWithMargins = left + margins.leftMargin;
+        final int topWithMargins = top + margins.topMargin;
+
+        view.layout(leftWithMargins, topWithMargins,
+                    leftWithMargins + width, topWithMargins + height);
+    }
+
+    private int getWidthWithMargins(View child) {
+        final MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
+        return child.getWidth() + lp.leftMargin + lp.rightMargin;
+    }
+
+    private int getHeightWithMargins(View child) {
+        final MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
+        return child.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;
+    }
+
+    private int getMeasuredWidthWithMargins(View child) {
+        final MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
+        return child.getMeasuredWidth() + lp.leftMargin + lp.rightMargin;
+    }
+
+    private int getMeasuredHeightWithMargins(View child) {
+        final MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
+        return child.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
 
-        final int profileSizeSpec = MeasureSpec.makeMeasureSpec(mProfileImageSize, MeasureSpec.EXACTLY);
-        mProfileImage.measure(profileSizeSpec, profileSizeSpec);
+        int widthUsed = getPaddingLeft() + getPaddingRight();
+        int heightUsed = getPaddingTop() + getPaddingBottom();
 
-        final int contentWidth = widthSize - mProfileImageSize - mContentMargin -
-                getPaddingLeft() - getPaddingRight();
-        final int contentWidthSpec = MeasureSpec.makeMeasureSpec(contentWidth, MeasureSpec.AT_MOST);
-        final int contentHeightSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+        measureChildWithMargins(mProfileImage,
+                                widthMeasureSpec, widthUsed,
+                                heightMeasureSpec, heightUsed);
+        widthUsed += getMeasuredHeightWithMargins(mProfileImage);
 
-        mAuthorText.measure(contentWidthSpec, contentHeightSpec);
-        mMessageText.measure(contentWidthSpec, contentHeightSpec);
+        measureChildWithMargins(mAuthorText,
+                                widthMeasureSpec, widthUsed,
+                                heightMeasureSpec, heightUsed);
+        heightUsed += getMeasuredHeightWithMargins(mAuthorText);
 
-        final int iconSizeSpec = MeasureSpec.makeMeasureSpec(mIconImageSize, MeasureSpec.EXACTLY);
-        for (Action action : Action.values()) {
-            mActionIcons.get(action).measure(iconSizeSpec, iconSizeSpec);
-        }
-
-        int contentHeight = mAuthorText.getMeasuredHeight() +
-                mMessageText.getMeasuredHeight() +
-                mContentMargin + mActionIcons.get(Action.REPLY).getMeasuredHeight();
+        measureChildWithMargins(mMessageText,
+                                widthMeasureSpec, widthUsed,
+                                heightMeasureSpec, heightUsed);
+        heightUsed += getMeasuredHeightWithMargins(mMessageText);
 
         if (mPostImage.getVisibility() != View.GONE) {
-            final int imageWidthSpec = MeasureSpec.makeMeasureSpec(contentWidth,
-                    MeasureSpec.EXACTLY);
-            final int imageHeightSpec = MeasureSpec.makeMeasureSpec(mPostImageHeight,
-                    MeasureSpec.EXACTLY);
-
-            mPostImage.measure(imageWidthSpec, imageHeightSpec);
-            contentHeight += mContentMargin + mPostImage.getMeasuredHeight();
+            measureChildWithMargins(mPostImage,
+                                    widthMeasureSpec, widthUsed,
+                                    heightMeasureSpec, heightUsed);
+            heightUsed += getMeasuredHeightWithMargins(mPostImage);
         }
 
-        final int width = widthSize + getPaddingLeft() + getPaddingRight();
-        final int height = Math.max(contentHeight, mProfileImage.getMeasuredHeight()) +
-                           getPaddingTop() + getPaddingBottom();
+        int maxIconHeight = 0;
+        for (Action action : Action.values()) {
+            final View iconView = mActionIcons.get(action);
+            measureChildWithMargins(iconView,
+                                    widthMeasureSpec, widthUsed,
+                                    heightMeasureSpec, heightUsed);
 
-        setMeasuredDimension(width, height);
+            final int height = getMeasuredHeightWithMargins(iconView);
+            if (height > maxIconHeight) {
+                maxIconHeight = height;
+            }
+
+            widthUsed += getMeasuredHeightWithMargins(iconView);
+        }
+        heightUsed += maxIconHeight;
+
+        final int width = widthSize + getPaddingLeft() + getPaddingRight();
+        setMeasuredDimension(width, heightUsed);
     }
 
     @Override
@@ -141,46 +161,51 @@ public class TweetLayoutView extends ViewGroup implements TweetPresenter {
         final int paddingLeft = getPaddingLeft();
         final int paddingTop = getPaddingTop();
 
-        layoutView(mProfileImage,
-                paddingLeft,
-                paddingTop,
-                mProfileImage.getMeasuredWidth(),
-                mProfileImage.getMeasuredHeight());
+        int top = paddingTop;
 
-        final int contentLeft = mContentMargin + paddingLeft + mProfileImage.getWidth();
+        layoutView(mProfileImage, paddingLeft, top,
+                   mProfileImage.getMeasuredWidth(),
+                   mProfileImage.getMeasuredHeight());
 
-        layoutView(mAuthorText,
-                contentLeft,
-                paddingTop,
-                mAuthorText.getMeasuredWidth(),
-                mAuthorText.getMeasuredHeight());
+        final int contentLeft = getWidthWithMargins(mProfileImage) + paddingLeft;
 
-        layoutView(mMessageText,
-                contentLeft,
-                paddingTop + mAuthorText.getHeight(),
-                mMessageText.getMeasuredWidth(),
-                mMessageText.getMeasuredHeight());
+        layoutView(mAuthorText, contentLeft, top,
+                   mAuthorText.getMeasuredWidth(),
+                   mAuthorText.getMeasuredHeight());
+        top += getHeightWithMargins(mAuthorText);
 
-        int iconTop = mContentMargin + paddingTop + mAuthorText.getHeight() + mMessageText.getHeight();
+        layoutView(mMessageText, contentLeft, top,
+                   mMessageText.getMeasuredWidth(),
+                   mMessageText.getMeasuredHeight());
+        top += getHeightWithMargins(mMessageText);
 
         if (mPostImage.getVisibility() != View.GONE) {
-            layoutView(mPostImage,
-                    contentLeft,
-                    paddingTop + mAuthorText.getHeight() + mMessageText.getHeight() + mContentMargin,
-                    mPostImage.getMeasuredWidth(),
-                    mPostImage.getMeasuredHeight());
+            layoutView(mPostImage, contentLeft, top,
+                       mPostImage.getMeasuredWidth(),
+                       mPostImage.getMeasuredHeight());
 
-            iconTop += mPostImage.getHeight() + mContentMargin;
+            top += getHeightWithMargins(mPostImage);
         }
 
+        int iconsLeft = contentLeft;
         for (Action action : Action.values()) {
             final ImageView icon = mActionIcons.get(action);
-            layoutView(icon,
-                    contentLeft + (action.ordinal() * (icon.getMeasuredWidth() + mIconMargin)),
-                    iconTop,
-                    icon.getMeasuredWidth(),
-                    icon.getMeasuredHeight());
+
+            layoutView(icon, iconsLeft, top,
+                       icon.getMeasuredWidth(),
+                       icon.getMeasuredHeight());
+            iconsLeft += getWidthWithMargins(icon);
         }
+    }
+
+    @Override
+    public LayoutParams generateLayoutParams(AttributeSet attrs) {
+        return new MarginLayoutParams(getContext(), attrs);
+    }
+
+    @Override
+    protected LayoutParams generateDefaultLayoutParams() {
+        return new MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
     }
 
     @Override
