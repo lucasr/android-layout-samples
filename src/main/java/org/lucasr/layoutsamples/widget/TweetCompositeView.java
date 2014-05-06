@@ -78,6 +78,11 @@ public class TweetCompositeView extends RelativeLayout implements TweetPresenter
     }
 
     @Override
+    public boolean shouldDelayChildPressedState() {
+        return false;
+    }
+
+    @Override
     public void update(Tweet tweet, EnumSet<UpdateFlags> flags) {
         mAuthorText.setText(tweet.getAuthorName());
         mMessageText.setText(tweet.getMessage());

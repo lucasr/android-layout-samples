@@ -108,6 +108,11 @@ public class TweetLayoutView extends ViewGroup implements TweetPresenter {
     }
 
     @Override
+    public boolean shouldDelayChildPressedState() {
+        return false;
+    }
+
+    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
 
