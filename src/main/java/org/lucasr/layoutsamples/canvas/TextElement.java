@@ -39,8 +39,6 @@ import android.view.ViewGroup.LayoutParams;
 
 import org.lucasr.layoutsamples.app.R;
 
-// TODO: introduce max height (line or pixels)
-
 public class TextElement extends AbstractUIElement {
     private CharSequence mText;
 
