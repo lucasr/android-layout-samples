@@ -25,6 +25,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 
+import org.lucasr.layoutsamples.util.ViewServer;
+
 public class MainActivity extends FragmentActivity {
     private LayoutsAdapter mPagerAdapter;
     private ViewPager mViewPager;
@@ -37,6 +39,20 @@ public class MainActivity extends FragmentActivity {
         mPagerAdapter = new LayoutsAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mPagerAdapter);
+
+        ViewServer.get(this).addWindow(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ViewServer.get(this).removeWindow(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ViewServer.get(this).setFocusedWindow(this);
     }
 
     private class LayoutsAdapter extends FragmentPagerAdapter {
