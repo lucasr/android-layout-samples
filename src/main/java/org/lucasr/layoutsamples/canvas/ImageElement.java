@@ -17,19 +17,34 @@
 package org.lucasr.layoutsamples.canvas;
 
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.widget.ImageView.ScaleType;
 
+import org.lucasr.layoutsamples.app.R;
+
 public class ImageElement extends AbstractUIElement implements Drawable.Callback {
     private static final String LOGTAG = "ImageElement";
+
+    private static final ScaleType[] sScaleTypeArray = {
+        ScaleType.MATRIX,
+        ScaleType.FIT_XY,
+        ScaleType.FIT_START,
+        ScaleType.FIT_CENTER,
+        ScaleType.FIT_END,
+        ScaleType.CENTER,
+        ScaleType.CENTER_CROP,
+        ScaleType.CENTER_INSIDE
+    };
 
     private Drawable mDrawable;
     private int mResourceId;
@@ -47,9 +62,38 @@ public class ImageElement extends AbstractUIElement implements Drawable.Callback
     private int mLevel;
 
     public ImageElement(UIElementHost host) {
-        super(host);
+        this(host, null);
+    }
+
+    public ImageElement(UIElementHost host, AttributeSet attrs) {
+        super(host, attrs);
         mMatrix = new Matrix();
         mScaleType = ScaleType.FIT_CENTER;
+
+        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ImageElement, 0, 0);
+
+        final int indexCount = a.getIndexCount();
+        for (int i = 0; i < indexCount; i++) {
+            final int attr = a.getIndex(i);
+
+            switch (attr) {
+                case R.styleable.ImageElement_android_src:
+                    final Drawable d = a.getDrawable(attr);
+                    if (d != null) {
+                        setImageDrawable(d);
+                    }
+                    break;
+
+                case R.styleable.ImageElement_android_scaleType:
+                    final int index = a.getInt(attr, -1);
+                    if (index >= 0) {
+                        setScaleType(sScaleTypeArray[index]);
+                    }
+                    break;
+            }
+        }
+
+        a.recycle();
     }
 
     private void configureBounds() {

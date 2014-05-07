@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2014 Lucas Rocha
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageElement
+        android:id="@+id/profile_image"
+        android:layout_width="@dimen/tweet_profile_image_size"
+        android:layout_height="@dimen/tweet_profile_image_size"
+        android:layout_marginRight="@dimen/tweet_content_margin"
+        android:scaleType="centerCrop"/>
+
+    <TextElement
+        android:id="@+id/author_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/tweet_author_text_color"
+        android:textSize="@dimen/tweet_author_text_size"
+        android:singleLine="true"/>
+
+    <TextElement
+        android:id="@+id/message_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/tweet_content_margin"
+        android:textColor="@color/tweet_message_text_color"
+        android:textSize="@dimen/tweet_message_text_size"/>
+
+    <ImageElement
+        android:id="@+id/post_image"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/tweet_post_image_height"
+        android:layout_marginBottom="@dimen/tweet_content_margin"
+        android:scaleType="centerCrop"/>
+
+    <ImageElement
+        android:id="@+id/reply_action"
+        android:layout_width="@dimen/tweet_icon_image_size"
+        android:layout_height="@dimen/tweet_icon_image_size"
+        android:src="@drawable/tweet_reply"
+        android:scaleType="fitStart"/>
+
+    <ImageElement
+        android:id="@+id/retweet_action"
+        android:layout_width="@dimen/tweet_icon_image_size"
+        android:layout_height="@dimen/tweet_icon_image_size"
+        android:src="@drawable/tweet_retweet"
+        android:scaleType="fitStart"/>
+
+    <ImageElement
+        android:id="@+id/favourite_action"
+        android:layout_width="@dimen/tweet_icon_image_size"
+        android:layout_height="@dimen/tweet_icon_image_size"
+        android:src="@drawable/tweet_favourite"
+        android:scaleType="fitStart"/>
+
+</merge>

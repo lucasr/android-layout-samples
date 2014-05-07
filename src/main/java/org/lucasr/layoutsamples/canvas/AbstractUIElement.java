@@ -18,12 +18,19 @@ package org.lucasr.layoutsamples.canvas;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+
+import org.lucasr.layoutsamples.app.R;
 
 public abstract class AbstractUIElement implements UIElement {
     protected UIElementHost mHost;
+
+    private int mId;
 
     private int mMeasuredWidth;
     private int mMeasuredHeight;
@@ -31,10 +38,50 @@ public abstract class AbstractUIElement implements UIElement {
     private Rect mBounds = new Rect();
     private Rect mPadding = new Rect();
 
+    private LayoutParams mLayoutParams;
+
     private int mVisibility = View.VISIBLE;
 
     public AbstractUIElement(UIElementHost host) {
+        this(host, null);
+    }
+
+    public AbstractUIElement(UIElementHost host, AttributeSet attrs) {
         swapHost(host);
+
+        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.UIElement, 0, 0);
+
+        final int indexCount = a.getIndexCount();
+        for (int i = 0; i < indexCount; i++) {
+            final int attr = a.getIndex(i);
+
+            switch (attr) {
+                case R.styleable.UIElement_android_padding:
+                    final int padding = a.getDimensionPixelSize(attr, 0);
+                    mPadding.left = mPadding.top = mPadding.right = mPadding.bottom = padding;
+                    break;
+                case R.styleable.UIElement_android_paddingLeft:
+                    mPadding.left = a.getDimensionPixelSize(attr, 0);
+                    break;
+                case R.styleable.UIElement_android_paddingTop:
+                    mPadding.top = a.getDimensionPixelSize(attr, 0);
+                    break;
+                case R.styleable.UIElement_android_paddingRight:
+                    mPadding.right = a.getDimensionPixelSize(attr, 0);
+                    break;
+                case R.styleable.UIElement_android_paddingBottom:
+                    mPadding.bottom = a.getDimensionPixelSize(attr, 0);
+                    break;
+                case R.styleable.UIElement_android_id:
+                    mId = a.getResourceId(attr, -1);
+                    break;
+                case R.styleable.UIElement_android_visibility:
+                    mVisibility = a.getInt(attr, View.VISIBLE);
+                    break;
+            }
+        }
+
+        a.recycle();
     }
 
     protected void onAttachedToHost() {
@@ -60,6 +107,11 @@ public abstract class AbstractUIElement implements UIElement {
         }
 
         return true;
+    }
+
+    @Override
+    public int getId() {
+        return mId;
     }
 
     protected void setMeasuredDimension(int width, int height) {
@@ -104,7 +156,7 @@ public abstract class AbstractUIElement implements UIElement {
         mPadding.right = right;
         mPadding.bottom = bottom;
 
-        mHost.requestLayout();
+        requestLayout();
     }
 
     @Override
@@ -180,6 +232,25 @@ public abstract class AbstractUIElement implements UIElement {
     @Override
     public int getHeight() {
         return mBounds.bottom - mBounds.top;
+    }
+
+    @Override
+    public void setLayoutParams(LayoutParams lp) {
+        if (mLayoutParams == lp) {
+            return;
+        }
+
+        mLayoutParams = lp;
+        requestLayout();
+    }
+
+    @Override
+    public LayoutParams getLayoutParams() {
+        return mLayoutParams;
+    }
+
+    @Override
+    public void onFinishInflate() {
     }
 
     @Override

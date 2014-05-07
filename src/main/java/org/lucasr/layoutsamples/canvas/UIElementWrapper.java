@@ -19,6 +19,7 @@ package org.lucasr.layoutsamples.canvas;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.view.ViewGroup;
 
 public class UIElementWrapper implements UIElement {
     private final UIElement mWrappedElement;
@@ -30,6 +31,11 @@ public class UIElementWrapper implements UIElement {
     @Override
     public boolean swapHost(UIElementHost host) {
         return mWrappedElement.swapHost(host);
+    }
+
+    @Override
+    public int getId() {
+        return mWrappedElement.getId();
     }
 
     @Override
@@ -95,6 +101,21 @@ public class UIElementWrapper implements UIElement {
     @Override
     public int getHeight() {
         return mWrappedElement.getHeight();
+    }
+
+    @Override
+    public void setLayoutParams(ViewGroup.LayoutParams lp) {
+        mWrappedElement.setLayoutParams(lp);
+    }
+
+    @Override
+    public ViewGroup.LayoutParams getLayoutParams() {
+        return mWrappedElement.getLayoutParams();
+    }
+
+    @Override
+    public void onFinishInflate() {
+        mWrappedElement.onFinishInflate();
     }
 
     @Override

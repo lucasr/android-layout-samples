@@ -19,187 +19,199 @@ package org.lucasr.layoutsamples.widget;
 import android.content.res.Resources;
 import android.text.Layout;
 import android.text.TextUtils;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.MeasureSpec;
+import android.view.ViewGroup.LayoutParams;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.ImageView;
 
 import org.lucasr.layoutsamples.adapter.Tweet;
 import org.lucasr.layoutsamples.adapter.TweetPresenter;
 import org.lucasr.layoutsamples.app.R;
-import org.lucasr.layoutsamples.canvas.AbstractUIElement;
-import org.lucasr.layoutsamples.canvas.ElementGroup;
+import org.lucasr.layoutsamples.canvas.UIElementGroup;
 import org.lucasr.layoutsamples.canvas.ImageElement;
 import org.lucasr.layoutsamples.canvas.TextElement;
+import org.lucasr.layoutsamples.canvas.UIElement;
 import org.lucasr.layoutsamples.canvas.UIElementHost;
+import org.lucasr.layoutsamples.canvas.UIElementInflater;
 import org.lucasr.layoutsamples.util.ImageUtils;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
 
-public class TweetElement extends ElementGroup implements TweetPresenter {
+public class TweetElement extends UIElementGroup implements TweetPresenter {
     private ImageElement mProfileImage;
     private TextElement mAuthorText;
     private TextElement mMessageText;
     private ImageElement mPostImage;
-    private EnumMap<Action, ImageElement> mActionIcons;
-
-    private int mPostImageHeight;
-    private int mProfileImageSize;
-    private int mIconImageSize;
-    private int mIconMargin;
-    private int mContentMargin;
+    private EnumMap<Action, UIElement> mActionIcons;
 
     private ImageElementTarget mProfileImageTarget;
     private ImageElementTarget mPostImageTarget;
 
     public TweetElement(UIElementHost host) {
-        super(host);
+        this(host, null);
+    }
+
+    public TweetElement(UIElementHost host, AttributeSet attrs) {
+        super(host, attrs);
 
         final Resources res = getResources();
-
-        mPostImageHeight = res.getDimensionPixelSize(R.dimen.tweet_post_image_height);
-        mProfileImageSize = res.getDimensionPixelSize(R.dimen.tweet_profile_image_size);
-        mIconImageSize = res.getDimensionPixelSize(R.dimen.tweet_icon_image_size);
-        mIconMargin = res.getDimensionPixelSize(R.dimen.tweet_icon_margin);
-        mContentMargin = res.getDimensionPixelSize(R.dimen.tweet_content_margin);
 
         int padding = res.getDimensionPixelOffset(R.dimen.tweet_padding);
         setPadding(padding, padding, padding, padding);
 
-        mProfileImage = new ImageElement(host);
-        mProfileImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        UIElementInflater.from(getContext()).inflate(R.layout.tweet_element_view, host, this);
+        mProfileImage = (ImageElement) findElementById(R.id.profile_image);
+        mAuthorText = (TextElement) findElementById(R.id.author_text);
+        mMessageText = (TextElement) findElementById(R.id.message_text);
+        mPostImage = (ImageElement) findElementById(R.id.post_image);
+
         mProfileImageTarget = new ImageElementTarget(res, mProfileImage);
-        addElement(mProfileImage);
-
-        mAuthorText = new TextElement(host);
-        mAuthorText.setRawTextSize(res.getDimensionPixelSize(R.dimen.tweet_author_text_size));
-        mAuthorText.setTextAlignment(Layout.Alignment.ALIGN_NORMAL);
-        mAuthorText.setTextColor(res.getColor(R.color.tweet_author_text_color));
-        addElement(mAuthorText);
-
-        mMessageText = new TextElement(host);
-        mMessageText.setRawTextSize(res.getDimensionPixelSize(R.dimen.tweet_message_text_size));
-        mMessageText.setTextColor(res.getColor(R.color.tweet_message_text_color));
-        addElement(mMessageText);
-
-        mPostImage = new ImageElement(host);
-        mPostImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
         mPostImageTarget = new ImageElementTarget(res, mPostImage);
-        addElement(mPostImage);
 
         mActionIcons = new EnumMap(Action.class);
         for (Action action : Action.values()) {
-            final ImageElement icon = new ImageElement(host);
-            icon.setScaleType(ImageView.ScaleType.FIT_XY);
-
+            final int elementId;
             switch (action) {
                 case REPLY:
-                    icon.setImageResource(R.drawable.tweet_reply);
+                    elementId = R.id.reply_action;
                     break;
 
                 case RETWEET:
-                    icon.setImageResource(R.drawable.tweet_retweet);
+                    elementId = R.id.retweet_action;
                     break;
 
                 case FAVOURITE:
-                    icon.setImageResource(R.drawable.tweet_favourite);
+                    elementId = R.id.favourite_action;
                     break;
+
+                default:
+                    throw new IllegalArgumentException("Unrecognized tweet action");
             }
 
-            mActionIcons.put(action, icon);
-            addElement(icon);
+            mActionIcons.put(action, findElementById(elementId));
         }
     }
 
-    private void layoutElement(AbstractUIElement element, int left, int top, int width, int height) {
-        element.layout(left, top, left + width, top + height);
+    private void layoutElement(UIElement element, int left, int top, int width, int height) {
+        MarginLayoutParams margins = (MarginLayoutParams) element.getLayoutParams();
+        final int leftWithMargins = left + margins.leftMargin;
+        final int topWithMargins = top + margins.topMargin;
+
+        element.layout(leftWithMargins, topWithMargins,
+                       leftWithMargins + width, topWithMargins + height);
+    }
+
+    private int getWidthWithMargins(UIElement element) {
+        final MarginLayoutParams lp = (MarginLayoutParams) element.getLayoutParams();
+        return element.getWidth() + lp.leftMargin + lp.rightMargin;
+    }
+
+    private int getHeightWithMargins(UIElement element) {
+        final MarginLayoutParams lp = (MarginLayoutParams) element.getLayoutParams();
+        return element.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;
+    }
+
+    private int getMeasuredWidthWithMargins(UIElement element) {
+        final MarginLayoutParams lp = (MarginLayoutParams) element.getLayoutParams();
+        return element.getMeasuredWidth() + lp.leftMargin + lp.rightMargin;
+    }
+
+    private int getMeasuredHeightWithMargins(UIElement element) {
+        final MarginLayoutParams lp = (MarginLayoutParams) element.getLayoutParams();
+        return element.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;
     }
 
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
 
-        final int profileSizeSpec = MeasureSpec.makeMeasureSpec(mProfileImageSize, MeasureSpec.EXACTLY);
-        mProfileImage.measure(profileSizeSpec, profileSizeSpec);
+        int widthUsed = 0;
+        int heightUsed = 0;
 
-        final int contentWidth = widthSize - mProfileImageSize - mContentMargin -
-                getPaddingLeft() - getPaddingRight();
-        final int contentWidthSpec = MeasureSpec.makeMeasureSpec(contentWidth, MeasureSpec.AT_MOST);
-        final int contentHeightSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+        measureElementWithMargins(mProfileImage,
+                                  widthMeasureSpec, widthUsed,
+                                  heightMeasureSpec, heightUsed);
+        widthUsed += getMeasuredWidthWithMargins(mProfileImage);
 
-        mAuthorText.measure(contentWidthSpec, contentHeightSpec);
-        mMessageText.measure(contentWidthSpec, contentHeightSpec);
+        measureElementWithMargins(mAuthorText,
+                                  widthMeasureSpec, widthUsed,
+                                  heightMeasureSpec, heightUsed);
+        heightUsed += getMeasuredHeightWithMargins(mAuthorText);
 
-        final int iconSizeSpec = MeasureSpec.makeMeasureSpec(mIconImageSize, MeasureSpec.EXACTLY);
-        for (Action action : Action.values()) {
-            mActionIcons.get(action).measure(iconSizeSpec, iconSizeSpec);
-        }
-
-        int contentHeight = mAuthorText.getMeasuredHeight() +
-                mMessageText.getMeasuredHeight() +
-                mContentMargin + mActionIcons.get(Action.REPLY).getMeasuredHeight();
+        measureElementWithMargins(mMessageText,
+                                  widthMeasureSpec, widthUsed,
+                                  heightMeasureSpec, heightUsed);
+        heightUsed += getMeasuredHeightWithMargins(mMessageText);
 
         if (mPostImage.getVisibility() != View.GONE) {
-            final int imageWidthSpec = MeasureSpec.makeMeasureSpec(contentWidth,
-                    MeasureSpec.EXACTLY);
-            final int imageHeightSpec = MeasureSpec.makeMeasureSpec(mPostImageHeight,
-                    MeasureSpec.EXACTLY);
-
-            mPostImage.measure(imageWidthSpec, imageHeightSpec);
-            contentHeight += mContentMargin + mPostImage.getMeasuredHeight();
+            measureElementWithMargins(mPostImage,
+                                      widthMeasureSpec, widthUsed,
+                                      heightMeasureSpec, heightUsed);
+            heightUsed += getMeasuredHeightWithMargins(mPostImage);
         }
 
-        final int width = widthSize + getPaddingLeft() + getPaddingRight();
-        final int height = Math.max(contentHeight, mProfileImage.getMeasuredHeight()) +
-                           getPaddingTop() + getPaddingBottom();
+        int maxIconHeight = 0;
+        for (Action action : Action.values()) {
+            final UIElement icon = mActionIcons.get(action);
+            measureElementWithMargins(icon,
+                                      widthMeasureSpec, widthUsed,
+                                      heightMeasureSpec, heightUsed);
 
-        setMeasuredDimension(width, height);
+            final int height = getMeasuredHeightWithMargins(icon);
+            if (height > maxIconHeight) {
+                maxIconHeight = height;
+            }
+
+            widthUsed += getMeasuredWidthWithMargins(icon);
+        }
+        heightUsed += maxIconHeight;
+
+        int heightSize = heightUsed + getPaddingTop() + getPaddingBottom();
+        setMeasuredDimension(widthSize, heightSize);
     }
 
     @Override
-    public void onLayout(int left, int top, int right, int bottom) {
+    public void onLayout(int l, int t, int r, int b) {
         final int paddingLeft = getPaddingLeft();
         final int paddingTop = getPaddingTop();
 
-        layoutElement(mProfileImage,
-                paddingLeft,
-                paddingTop,
-                mProfileImage.getMeasuredWidth(),
-                mProfileImage.getMeasuredHeight());
+        int currentTop = paddingTop;
 
-        final int contentLeft = mContentMargin + paddingLeft + mProfileImage.getWidth();
+        layoutElement(mProfileImage, paddingLeft, currentTop,
+                      mProfileImage.getMeasuredWidth(),
+                      mProfileImage.getMeasuredHeight());
 
-        layoutElement(mAuthorText,
-                contentLeft,
-                paddingTop,
-                mAuthorText.getMeasuredWidth(),
-                mAuthorText.getMeasuredHeight());
+        final int contentLeft = getWidthWithMargins(mProfileImage) + paddingLeft;
+        final int contentWidth = r - l - contentLeft - getPaddingRight();
 
-        layoutElement(mMessageText,
-                contentLeft,
-                paddingTop + mAuthorText.getHeight(),
-                mMessageText.getMeasuredWidth(),
-                mMessageText.getMeasuredHeight());
+        layoutElement(mAuthorText, contentLeft, currentTop,
+                      contentWidth, mAuthorText.getMeasuredHeight());
+        currentTop += getHeightWithMargins(mAuthorText);
 
-        int iconTop = mContentMargin + paddingTop + mAuthorText.getHeight() + mMessageText.getHeight();
+        layoutElement(mMessageText, contentLeft, currentTop,
+                      contentWidth, mMessageText.getMeasuredHeight());
+        currentTop += getHeightWithMargins(mMessageText);
 
         if (mPostImage.getVisibility() != View.GONE) {
-            layoutElement(mPostImage,
-                    contentLeft,
-                    paddingTop + mAuthorText.getHeight() + mMessageText.getHeight() + mContentMargin,
-                    mPostImage.getMeasuredWidth(),
-                    mPostImage.getMeasuredHeight());
+            layoutElement(mPostImage, contentLeft, currentTop,
+                    contentWidth, mPostImage.getMeasuredHeight());
 
-            iconTop += mPostImage.getHeight() + mContentMargin;
+            currentTop += getHeightWithMargins(mPostImage);
         }
 
+        final int iconsWidth = contentWidth / mActionIcons.size();
+        int iconsLeft = contentLeft;
+
         for (Action action : Action.values()) {
-            final ImageElement icon = mActionIcons.get(action);
-            layoutElement(icon,
-                    contentLeft + (action.ordinal() * (icon.getMeasuredWidth() + mIconMargin)),
-                    iconTop,
-                    icon.getMeasuredWidth(),
-                    icon.getMeasuredHeight());
+            final UIElement icon = mActionIcons.get(action);
+
+            layoutElement(icon, iconsLeft, currentTop,
+                          iconsWidth, icon.getMeasuredHeight());
+            iconsLeft += iconsWidth;
         }
     }
 

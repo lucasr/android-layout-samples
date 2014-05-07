@@ -30,20 +30,15 @@ public class AsyncTweetElementFactory {
     private AsyncTweetElementFactory() {
     }
 
-    private static volatile int sTargetWidth;
+    private static int sTargetWidth;
     private static HeadlessElementHost sHeadlessHost;
 
-    public static void setTargetWidth(Context context, int targetWidth) {
+    public synchronized static void setTargetWidth(Context context, int targetWidth) {
         if (sTargetWidth == targetWidth) {
             return;
         }
 
         sTargetWidth = targetWidth;
-
-        if (sHeadlessHost == null) {
-            sHeadlessHost = new HeadlessElementHost(context);
-        }
-        sHeadlessHost.setTargetWidth(targetWidth);
     }
 
     public synchronized static AsyncTweetElement create(Context context, Tweet tweet) {
@@ -58,6 +53,10 @@ public class AsyncTweetElementFactory {
                 View.MeasureSpec.EXACTLY);
         final int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0,
                 View.MeasureSpec.UNSPECIFIED);
+
+        if (sHeadlessHost == null) {
+            sHeadlessHost = new HeadlessElementHost(context);
+        }
 
         final TweetElement element = new TweetElement(sHeadlessHost);
         element.update(tweet, EnumSet.of(TweetPresenter.UpdateFlags.NO_IMAGE_LOADING));

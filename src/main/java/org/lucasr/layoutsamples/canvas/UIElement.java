@@ -19,9 +19,12 @@ package org.lucasr.layoutsamples.canvas;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.view.ViewGroup.LayoutParams;
 
 public interface UIElement {
     public boolean swapHost(UIElementHost host);
+
+    public int getId();
 
     public int getMeasuredWidth();
     public int getMeasuredHeight();
@@ -39,6 +42,11 @@ public interface UIElement {
 
     public int getWidth();
     public int getHeight();
+
+    public void setLayoutParams(LayoutParams lp);
+    public LayoutParams getLayoutParams();
+
+    public void onFinishInflate();
 
     public void measure(int widthMeasureSpec, int heightMeasureSpec);
     public void layout(int left, int top, int right, int bottom);

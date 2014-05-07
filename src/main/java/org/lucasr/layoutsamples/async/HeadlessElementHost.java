@@ -25,20 +25,13 @@ import org.lucasr.layoutsamples.canvas.UIElementHost;
 
 public class HeadlessElementHost implements UIElementHost {
     private final Context mContext;
-    private final LayoutParams mLayoutParams;
 
     public HeadlessElementHost(Context context) {
         mContext = context;
-        mLayoutParams = new LayoutParams(0, LayoutParams.WRAP_CONTENT);
     }
 
     @Override
     public void requestLayout() {
-    }
-
-    @Override
-    public LayoutParams getLayoutParams() {
-        return mLayoutParams;
     }
 
     @Override
@@ -78,9 +71,5 @@ public class HeadlessElementHost implements UIElementHost {
 
     @Override
     public void unscheduleDrawable(Drawable who, Runnable what) {
-    }
-
-    public void setTargetWidth(int targetWidth) {
-        mLayoutParams.width = targetWidth;
     }
 }

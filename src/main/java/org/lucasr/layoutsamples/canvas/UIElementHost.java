@@ -23,7 +23,6 @@ import android.view.ViewGroup.LayoutParams;
 
 public interface UIElementHost {
     public void requestLayout();
-    public LayoutParams getLayoutParams();
 
     public void invalidate();
     public void invalidate(int left, int top, int right, int bottom);

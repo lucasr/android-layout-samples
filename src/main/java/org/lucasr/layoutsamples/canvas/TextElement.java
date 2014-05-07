@@ -18,8 +18,10 @@ package org.lucasr.layoutsamples.canvas;
 
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.text.BoringLayout;
 import android.text.DynamicLayout;
 import android.text.Layout;
@@ -28,11 +30,14 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
+import android.util.AttributeSet;
 import android.util.FloatMath;
 import android.util.TypedValue;
 import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+
+import org.lucasr.layoutsamples.app.R;
 
 // TODO: introduce max height (line or pixels)
 
@@ -57,8 +62,37 @@ public class TextElement extends AbstractUIElement {
     private static final BoringLayout.Metrics UNKNOWN_BORING = new BoringLayout.Metrics();
 
     public TextElement(UIElementHost host) {
-        super(host);
+        this(host, null);
+    }
+
+    public TextElement(UIElementHost host, AttributeSet attrs) {
+        super(host, attrs);
         setTextColor(ColorStateList.valueOf(0xFF000000));
+
+        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.TextElement, 0, 0);
+
+        final int indexCount = a.getIndexCount();
+        for (int i = 0; i < indexCount; i++) {
+            final int attr = a.getIndex(i);
+
+            switch (attr) {
+                case R.styleable.TextElement_android_textSize:
+                    final int textSize = a.getDimensionPixelSize(attr, -1);
+                    if (textSize >= 0) {
+                        setRawTextSize(textSize);
+                    }
+                    break;
+
+                case R.styleable.TextElement_android_textColor:
+                    final ColorStateList textColors = a.getColorStateList(attr);
+                    if (textColors != null) {
+                        setTextColor(textColors);
+                    }
+                    break;
+            }
+        }
+
+        a.recycle();
     }
 
     private int getDesiredWidth() {
@@ -183,11 +217,11 @@ public class TextElement extends AbstractUIElement {
     }
 
     private void checkForRelayout() {
-        if (mLayout == null || mHost == null) {
+        if (mLayout == null) {
             return;
         }
 
-        final LayoutParams lp = mHost.getLayoutParams();
+        final LayoutParams lp = getLayoutParams();
 
         // If we have a fixed width, we can just swap in a new text layout
         // if the text height stays the same or if the view height is fixed.
