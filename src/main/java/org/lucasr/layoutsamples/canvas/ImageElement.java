@@ -355,7 +355,7 @@ public class ImageElement extends AbstractUIElement implements Drawable.Callback
 
     @Override
     public void drawableStateChanged() {
-        if (mDrawable != null && mDrawable.isStateful()) {
+        if (isAttachedToHost() && mDrawable != null && mDrawable.isStateful()) {
             mDrawable.setState(mHost.getDrawableState());
         }
     }
@@ -368,6 +368,10 @@ public class ImageElement extends AbstractUIElement implements Drawable.Callback
 
     @Override
     public void invalidateDrawable(Drawable who) {
+        if (!isAttachedToHost()) {
+            return;
+        }
+
         if (mDrawable == who) {
             mHost.invalidate();
         } else {
@@ -377,12 +381,16 @@ public class ImageElement extends AbstractUIElement implements Drawable.Callback
 
     @Override
     public void scheduleDrawable(Drawable who, Runnable what, long when) {
-        mHost.scheduleDrawable(who, what, when);
+        if (isAttachedToHost()) {
+            mHost.scheduleDrawable(who, what, when);
+        }
     }
 
     @Override
     public void unscheduleDrawable(Drawable who, Runnable what) {
-        mHost.unscheduleDrawable(who, what);
+        if (isAttachedToHost()) {
+            mHost.unscheduleDrawable(who, what);
+        }
     }
 
     @Override
