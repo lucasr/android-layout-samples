@@ -284,7 +284,7 @@ public class TextElement extends AbstractUIElement {
         boolean changed = super.swapHost(host);
 
         if (changed && host != null) {
-            final Resources res = mHost.getResources();
+            final Resources res = getResources();
             mPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
             mPaint.density = res.getDisplayMetrics().density;
         }
@@ -429,7 +429,7 @@ public class TextElement extends AbstractUIElement {
     }
 
     public void setTextSize(int unit, float size) {
-        final Resources res = mHost.getResources();
+        final Resources res = getResources();
 
         final float textSize = TypedValue.applyDimension(unit, size, res.getDisplayMetrics());
         if (mPaint.getTextSize() == textSize) {
