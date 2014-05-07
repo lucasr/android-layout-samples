@@ -17,15 +17,14 @@
 package org.lucasr.layoutsamples.widget;
 
 import android.content.res.Resources;
-import android.text.Layout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.MeasureSpec;
-import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
-import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.lucasr.layoutsamples.adapter.Tweet;
 import org.lucasr.layoutsamples.adapter.TweetPresenter;
@@ -123,6 +122,24 @@ public class TweetElement extends UIElementGroup implements TweetPresenter {
     private int getMeasuredHeightWithMargins(UIElement element) {
         final MarginLayoutParams lp = (MarginLayoutParams) element.getLayoutParams();
         return element.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;
+    }
+
+    private void cancelImageRequest(Target target) {
+        if (!isAttachedToHost() || target == null) {
+            return;
+        }
+
+        Picasso.with(getContext()).cancelRequest(target);
+    }
+
+    @Override
+    public boolean swapHost(UIElementHost host) {
+        if (host == null) {
+            cancelImageRequest(mProfileImageTarget);
+            cancelImageRequest(mPostImageTarget);
+        }
+
+        return super.swapHost(host);
     }
 
     @Override
