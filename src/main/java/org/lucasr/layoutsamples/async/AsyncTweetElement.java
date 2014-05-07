@@ -54,7 +54,6 @@ public class AsyncTweetElement extends UIElementWrapper implements TweetPresente
         boolean onMainThread = (Looper.myLooper() == Looper.getMainLooper());
         final int indicatorColor = onMainThread ? R.color.tweet_on_main_thread :
                                                   R.color.tweet_off_main_thread;
-
         mIndicatorPaint.setColor(res.getColor(indicatorColor));
     }
 
@@ -69,12 +68,12 @@ public class AsyncTweetElement extends UIElementWrapper implements TweetPresente
 
     @Override
     public void measure(int widthMeasureSpec, int heightMeasureSpec) {
-        // Do nothing, assume the wrapped UIElement is already measured.
+        // Do nothing, the wrapped UIElement is already measured.
     }
 
     @Override
     public void layout(int left, int top, int right, int bottom) {
-        // Do nothing, assume the wrapped UIElement is already sized and positioned.
+        // Do nothing, the wrapped UIElement is already sized and positioned.
     }
 
     @Override
