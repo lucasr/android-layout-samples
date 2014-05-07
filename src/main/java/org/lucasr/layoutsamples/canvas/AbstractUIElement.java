@@ -110,6 +110,11 @@ public abstract class AbstractUIElement implements UIElement {
     }
 
     @Override
+    public boolean isAttachedToHost() {
+        return (mHost != null);
+    }
+
+    @Override
     public int getId() {
         return mId;
     }

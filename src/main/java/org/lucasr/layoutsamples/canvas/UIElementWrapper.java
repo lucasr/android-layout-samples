@@ -34,6 +34,11 @@ public class UIElementWrapper implements UIElement {
     }
 
     @Override
+    public boolean isAttachedToHost() {
+        return mWrappedElement.isAttachedToHost();
+    }
+
+    @Override
     public int getId() {
         return mWrappedElement.getId();
     }

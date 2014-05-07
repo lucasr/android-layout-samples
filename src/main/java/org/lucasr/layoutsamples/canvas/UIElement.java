@@ -23,6 +23,7 @@ import android.view.ViewGroup.LayoutParams;
 
 public interface UIElement {
     public boolean swapHost(UIElementHost host);
+    public boolean isAttachedToHost();
 
     public int getId();
 
