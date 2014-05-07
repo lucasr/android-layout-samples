@@ -63,7 +63,7 @@ public class AsyncTweetElementFactory {
         element.measure(widthMeasureSpec, heightMeasureSpec);
         element.layout(0, 0, element.getMeasuredWidth(), element.getMeasuredHeight());
 
-        asyncElement = new AsyncTweetElement(element, sHeadlessHost);
+        asyncElement = new AsyncTweetElement(element);
         elementCache.put(tweet.getId(), asyncElement);
 
         return asyncElement;

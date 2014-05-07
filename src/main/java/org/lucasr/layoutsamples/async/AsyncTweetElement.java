@@ -37,16 +37,13 @@ import org.lucasr.layoutsamples.canvas.UIElementWrapper;
 import java.util.EnumSet;
 
 public class AsyncTweetElement extends UIElementWrapper implements TweetPresenter {
-    private final UIElementHost mDefaultHost;
-
     private final Paint mIndicatorPaint;
     private final int mIndicatorSize;
 
-    public AsyncTweetElement(TweetElement element, UIElementHost defaultHost) {
+    public AsyncTweetElement(TweetElement element) {
         super(element);
-        mDefaultHost = defaultHost;
 
-        final Resources res = mDefaultHost.getResources();
+        final Resources res = getResources();
 
         mIndicatorPaint = new Paint();
         mIndicatorSize = res.getDimensionPixelSize(R.dimen.tweet_padding);
@@ -55,15 +52,6 @@ public class AsyncTweetElement extends UIElementWrapper implements TweetPresente
         final int indicatorColor = onMainThread ? R.color.tweet_on_main_thread :
                                                   R.color.tweet_off_main_thread;
         mIndicatorPaint.setColor(res.getColor(indicatorColor));
-    }
-
-    @Override
-    public boolean swapHost(UIElementHost host) {
-        if (host == null) {
-            host = mDefaultHost;
-        }
-
-        return super.swapHost(host);
     }
 
     @Override
