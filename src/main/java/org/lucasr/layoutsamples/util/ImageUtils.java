@@ -36,10 +36,10 @@ public class ImageUtils {
                                  EnumSet<UpdateFlags> flags) {
         if (!flags.contains(UpdateFlags.NO_IMAGE_LOADING)) {
             Picasso.with(context)
-                    .load(url)
-                    .placeholder(R.drawable.tweet_placeholder_image)
-                    .error(R.drawable.tweet_placeholder_image)
-                    .into(view);
+                   .load(url)
+                   .placeholder(R.drawable.tweet_placeholder_image)
+                   .error(R.drawable.tweet_placeholder_image)
+                   .into(view);
         } else {
             view.setImageResource(R.drawable.tweet_placeholder_image);
         }
@@ -50,10 +50,10 @@ public class ImageUtils {
                                  EnumSet<UpdateFlags> flags) {
         if (!flags.contains(UpdateFlags.NO_IMAGE_LOADING)) {
             Picasso.with(context)
-                    .load(url)
-                    .placeholder(R.drawable.tweet_placeholder_image)
-                    .error(R.drawable.tweet_placeholder_image)
-                    .into(target);
+                   .load(url)
+                   .placeholder(R.drawable.tweet_placeholder_image)
+                   .error(R.drawable.tweet_placeholder_image)
+                   .into(target);
         } else {
             element.setImageResource(R.drawable.tweet_placeholder_image);
         }
