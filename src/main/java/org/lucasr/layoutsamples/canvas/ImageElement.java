@@ -249,7 +249,7 @@ public class ImageElement extends AbstractUIElement implements Drawable.Callback
 
         if (mResourceId != 0) {
             try {
-                final Resources res = mHost.getResources();
+                final Resources res = getResources();
                 if (res == null) {
                     return;
                 }
@@ -444,7 +444,7 @@ public class ImageElement extends AbstractUIElement implements Drawable.Callback
     }
 
     public void setImageBitmap(Bitmap bitmap) {
-        setImageDrawable(new BitmapDrawable(mHost.getResources(), bitmap));
+        setImageDrawable(new BitmapDrawable(getResources(), bitmap));
     }
 
     public void setScaleType(ScaleType scaleType) {
