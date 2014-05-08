@@ -32,7 +32,8 @@
         android:layout_height="wrap_content"
         android:textColor="@color/tweet_author_text_color"
         android:textSize="@dimen/tweet_author_text_size"
-        android:singleLine="true"/>
+        android:ellipsize="end"
+        android:maxLines="1"/>
 
     <TextElement
         android:id="@+id/message_text"
