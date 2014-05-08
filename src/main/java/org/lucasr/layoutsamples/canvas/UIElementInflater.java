@@ -41,8 +41,10 @@ public class UIElementInflater {
 
     private static UIElementInflater sInstance;
 
-    private static final Class<?>[] mConstructorSignature = new Class[] {
-            UIElementHost.class, AttributeSet.class};
+    private static final Class<?>[] sConstructorSignature = new Class[] {
+        UIElementHost.class,
+        AttributeSet.class
+    };
 
     private static final HashMap<String, Constructor<? extends UIElement>> sConstructorMap =
             new HashMap<String, Constructor<? extends UIElement>>();
@@ -195,7 +197,7 @@ public class UIElementInflater {
                 clazz = mContext.getClassLoader().loadClass(
                         prefix != null ? (prefix + name) : name).asSubclass(UIElement.class);
 
-                constructor = clazz.getConstructor(mConstructorSignature);
+                constructor = clazz.getConstructor(sConstructorSignature);
                 sConstructorMap.put(name, constructor);
             }
 
