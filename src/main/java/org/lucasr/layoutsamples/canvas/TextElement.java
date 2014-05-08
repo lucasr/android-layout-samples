@@ -21,17 +21,15 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.text.BoringLayout;
-import android.text.DynamicLayout;
 import android.text.Layout;
-import android.text.Spannable;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
 import android.util.FloatMath;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
@@ -40,10 +38,15 @@ import android.view.ViewGroup.LayoutParams;
 import org.lucasr.layoutsamples.app.R;
 
 public class TextElement extends AbstractUIElement {
+    private static final String LOGTAG = "TextElement";
+
     private CharSequence mText;
 
     private ColorStateList mTextColor;
     private int mCurTextColor;
+
+    private int mMaxLines = Integer.MAX_VALUE;
+    private int mOldMaxLines = Integer.MAX_VALUE;
 
     private float mLineSpacingMult = 1.0f;
     private float mLineSpacingAdd = 0.0f;
@@ -87,6 +90,31 @@ public class TextElement extends AbstractUIElement {
                         setTextColor(textColors);
                     }
                     break;
+
+                case R.styleable.TextElement_android_maxLines:
+                    final int maxLines = a.getInt(attr, -1);
+                    if (maxLines > 0) {
+                        setMaxLines(maxLines);
+                    }
+                    break;
+
+                case R.styleable.TextElement_android_ellipsize:
+                    final int ellipsize = a.getInt(attr, -1);
+                    switch (ellipsize) {
+                        case 1:
+                            setEllipsize(TextUtils.TruncateAt.START);
+                            break;
+                        case 2:
+                            setEllipsize(TextUtils.TruncateAt.MIDDLE);
+                            break;
+                        case 3:
+                            setEllipsize(TextUtils.TruncateAt.END);
+                            break;
+                        case 4:
+                            Log.w(LOGTAG, "Marquee ellipsize is not supported");
+                            break;
+                    }
+                    break;
             }
         }
 
@@ -118,89 +146,88 @@ public class TextElement extends AbstractUIElement {
             return 0;
         }
 
-        final int lineCount = mLayout.getLineCount();
-        return mLayout.getLineTop(lineCount) + getPaddingTop() + getPaddingBottom();
+        final int padding = getPaddingTop() + getPaddingBottom();
+        final int refLine = Math.min(mMaxLines, mLayout.getLineCount());
+
+        return mLayout.getLineTop(refLine) + padding;
     }
 
     private void makeNewLayout(int wantWidth, BoringLayout.Metrics boring,
-            int ellipsisWidth, boolean bringIntoView) {
+                               int ellipsisWidth, boolean bringIntoView) {
         if (wantWidth < 0) {
             wantWidth = 0;
         }
 
+        mOldMaxLines = mMaxLines;
         boolean shouldEllipsize = (mEllipsize != null);
 
-        mLayout = makeSingleLayout(wantWidth, boring, ellipsisWidth, mLayoutAlignment, shouldEllipsize,
-                mEllipsize, bringIntoView);
+        mLayout = makeSingleLayout(wantWidth, boring, ellipsisWidth, mLayoutAlignment,
+                shouldEllipsize, mEllipsize, bringIntoView);
     }
 
     private Layout makeSingleLayout(int wantWidth, BoringLayout.Metrics boring, int ellipsisWidth,
-                                    Layout.Alignment alignment, boolean shouldEllipsize, TruncateAt effectiveEllipsize,
-                                    boolean useSaved) {
+                                    Layout.Alignment alignment, boolean shouldEllipsize,
+                                    TruncateAt effectiveEllipsize, boolean useSaved) {
         Layout result;
 
-        if (mText instanceof Spannable) {
-            result = new DynamicLayout(mText, mText, mPaint, wantWidth,
-                    alignment, mLineSpacingMult,
-                    mLineSpacingAdd, mIncludeFontPadding, effectiveEllipsize, ellipsisWidth);
-        } else {
-            if (boring == UNKNOWN_BORING) {
-                boring = BoringLayout.isBoring(mText, mPaint, mBoring);
-                if (boring != null) {
-                    mBoring = boring;
-                }
-            }
-
+        if (boring == UNKNOWN_BORING) {
+            boring = BoringLayout.isBoring(mText, mPaint, mBoring);
             if (boring != null) {
-                if (boring.width <= wantWidth &&
-                        (effectiveEllipsize == null || boring.width <= ellipsisWidth)) {
-                    if (mSavedLayout != null) {
-                        result = mSavedLayout.replaceOrMake(mText, mPaint,
-                                wantWidth, alignment, mLineSpacingMult, mLineSpacingAdd,
-                                boring, mIncludeFontPadding);
-                    } else {
-                        result = BoringLayout.make(mText, mPaint,
-                                wantWidth, alignment, mLineSpacingMult, mLineSpacingAdd,
-                                boring, mIncludeFontPadding);
-                    }
-
-                    if (useSaved) {
-                        mSavedLayout = (BoringLayout) result;
-                    }
-                } else if (shouldEllipsize && boring.width <= wantWidth) {
-                    if (useSaved && mSavedLayout != null) {
-                        result = mSavedLayout.replaceOrMake(mText, mPaint,
-                                wantWidth, alignment, mLineSpacingMult, mLineSpacingAdd,
-                                boring, mIncludeFontPadding, effectiveEllipsize,
-                                ellipsisWidth);
-                    } else {
-                        result = BoringLayout.make(mText, mPaint,
-                                wantWidth, alignment, mLineSpacingMult, mLineSpacingAdd,
-                                boring, mIncludeFontPadding, effectiveEllipsize,
-                                ellipsisWidth);
-                    }
-                } else if (shouldEllipsize) {
-                    result = new StaticLayout(mText,
-                            0, mText.length(),
-                            mPaint, wantWidth, alignment, mLineSpacingMult,
-                            mLineSpacingAdd, mIncludeFontPadding, effectiveEllipsize,
-                            ellipsisWidth);
-                } else {
-                    result = new StaticLayout(mText, mPaint,
-                            wantWidth, alignment, mLineSpacingMult, mLineSpacingAdd,
-                            mIncludeFontPadding);
-                }
-            } else if (shouldEllipsize) {
-                result = new StaticLayout(mText,
-                        0, mText.length(),
-                        mPaint, wantWidth, alignment, mLineSpacingMult,
-                        mLineSpacingAdd, mIncludeFontPadding, effectiveEllipsize,
-                        ellipsisWidth);
-            } else {
-                result = new StaticLayout(mText, mPaint,
-                        wantWidth, alignment, mLineSpacingMult, mLineSpacingAdd,
-                        mIncludeFontPadding);
+                mBoring = boring;
             }
+        }
+
+        if (boring != null) {
+            // Layout is smaller than target width, no ellipsize defined.
+            if (boring.width <= wantWidth &&
+                    (effectiveEllipsize == null || boring.width <= ellipsisWidth)) {
+                if (mSavedLayout != null) {
+                    result = mSavedLayout.replaceOrMake(mText, mPaint, wantWidth, alignment,
+                            mLineSpacingMult, mLineSpacingAdd, boring, mIncludeFontPadding);
+                } else {
+                    result = BoringLayout.make(mText, mPaint, wantWidth, alignment,
+                            mLineSpacingMult, mLineSpacingAdd, boring, mIncludeFontPadding);
+                }
+
+                if (useSaved) {
+                    mSavedLayout = (BoringLayout) result;
+                }
+
+            // Layout is smaller than target width, ellipsize is not necessary.
+            } else if (shouldEllipsize && boring.width <= wantWidth) {
+                if (useSaved && mSavedLayout != null) {
+                    result = mSavedLayout.replaceOrMake(mText, mPaint, wantWidth, alignment,
+                            mLineSpacingMult, mLineSpacingAdd, boring, mIncludeFontPadding,
+                            effectiveEllipsize, ellipsisWidth);
+                } else {
+                    result = BoringLayout.make(mText, mPaint, wantWidth, alignment,
+                            mLineSpacingMult, mLineSpacingAdd, boring, mIncludeFontPadding,
+                            effectiveEllipsize, ellipsisWidth);
+                }
+
+            // Should ellipsize, layout is bigger than target width.
+            } else if (shouldEllipsize) {
+                result = StaticLayoutWithMaxLines.create(mText, 0, mText.length(), mPaint, wantWidth,
+                        alignment, mLineSpacingMult, mLineSpacingAdd, mIncludeFontPadding,
+                        effectiveEllipsize, ellipsisWidth, mMaxLines);
+
+            // No ellipsize, just truncate text.
+            } else {
+                result = new StaticLayout(mText, mPaint, wantWidth, alignment, mLineSpacingMult,
+                        mLineSpacingAdd, mIncludeFontPadding);
+            }
+
+        // Layout is not Boring and should ellipsize.
+        } else if (shouldEllipsize) {
+            result = StaticLayoutWithMaxLines.create(mText, 0, mText.length(),
+                    mPaint, wantWidth, alignment, mLineSpacingMult,
+                    mLineSpacingAdd, mIncludeFontPadding, effectiveEllipsize,
+                    ellipsisWidth, mMaxLines);
+
+        // Layout is not boring and should not ellipsize
+        } else {
+            result = new StaticLayout(mText, mPaint, wantWidth, alignment, mLineSpacingMult,
+                    mLineSpacingAdd, mIncludeFontPadding);
         }
 
         return result;
@@ -369,18 +396,19 @@ public class TextElement extends AbstractUIElement {
         if (mLayout == null) {
             makeNewLayout(unpaddedWidth, boring, unpaddedWidth, false);
         } else {
-            final boolean layoutChanged =
-                    (mLayout.getWidth() != unpaddedWidth) ||
-                            (mLayout.getEllipsizedWidth() != unpaddedWidth);
+            final boolean layoutChanged = (mLayout.getWidth() != unpaddedWidth) ||
+                                          (mLayout.getEllipsizedWidth() != unpaddedWidth);
 
             final boolean widthChanged =
                     (mEllipsize == null) &&
-                            (unpaddedWidth > mLayout.getWidth()) &&
-                            (mLayout instanceof BoringLayout ||
-                                    (fromExisting && desiredWidth >= 0 && desiredWidth <= unpaddedWidth));
+                    (unpaddedWidth > mLayout.getWidth()) &&
+                    (mLayout instanceof BoringLayout ||
+                            (fromExisting && desiredWidth >= 0 && desiredWidth <= unpaddedWidth));
 
-            if (layoutChanged) {
-                if (widthChanged) {
+            final boolean maxChanged = (mMaxLines != mOldMaxLines);
+
+            if (layoutChanged || maxChanged) {
+                if (!maxChanged && widthChanged) {
                     mLayout.increaseWidthTo(unpaddedWidth);
                 } else {
                     makeNewLayout(unpaddedWidth, boring, unpaddedWidth, false);
@@ -468,6 +496,21 @@ public class TextElement extends AbstractUIElement {
 
         mEllipsize = ellipsize;
         recreateLayout();
+    }
+
+    public void setMaxLines(int maxLines) {
+        if (mMaxLines == maxLines) {
+            return;
+        }
+
+        mMaxLines = maxLines;
+
+        requestLayout();
+        invalidate();
+    }
+
+    public int getMaxLines() {
+        return mMaxLines;
     }
 
     @Override
