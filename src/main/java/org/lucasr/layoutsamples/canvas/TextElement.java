@@ -308,7 +308,7 @@ public class TextElement extends AbstractUIElement {
     public boolean swapHost(UIElementHost host) {
         boolean changed = super.swapHost(host);
 
-        if (changed && host != null) {
+        if (changed && isAttachedToHost()) {
             final Resources res = getResources();
             mPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
             mPaint.density = res.getDisplayMetrics().density;
