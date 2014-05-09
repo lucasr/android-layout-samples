@@ -56,7 +56,7 @@ public class TextElement extends AbstractUIElement {
     private Layout mLayout;
     private BoringLayout mSavedLayout;
 
-    private TextPaint mPaint;
+    private final TextPaint mPaint;
     private TextUtils.TruncateAt mEllipsize;
     private BoringLayout.Metrics mBoring;
 
@@ -68,6 +68,10 @@ public class TextElement extends AbstractUIElement {
 
     public TextElement(UIElementHost host, AttributeSet attrs) {
         super(host, attrs);
+
+        mPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        mPaint.density = getResources().getDisplayMetrics().density;
+
         setTextColor(ColorStateList.valueOf(0xFF000000));
 
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.TextElement, 0, 0);
@@ -302,19 +306,6 @@ public class TextElement extends AbstractUIElement {
             mCurTextColor = color;
             invalidate();
         }
-    }
-
-    @Override
-    public boolean swapHost(UIElementHost host) {
-        boolean changed = super.swapHost(host);
-
-        if (changed && isAttachedToHost()) {
-            final Resources res = getResources();
-            mPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-            mPaint.density = res.getDisplayMetrics().density;
-        }
-
-        return changed;
     }
 
     @Override
