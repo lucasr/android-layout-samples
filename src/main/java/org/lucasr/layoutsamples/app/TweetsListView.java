@@ -64,7 +64,7 @@ public class TweetsListView extends AsyncListView {
 
             ItemManager.Builder builder = new ItemManager.Builder(loader);
             builder.setPreloadItemsEnabled(true).setPreloadItemsCount(30);
-            builder.setThreadPoolSize(2);
+            builder.setThreadPoolSize(1);
             setItemManager(builder.build());
         }
     }
