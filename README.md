@@ -3,6 +3,13 @@ android-layout-samples
 
 Explorations around Android custom layouts, including off main thread View measure/layout passes.
 
+Sample code for:
+* Composite View
+* Custom Composite View
+* Flat Custom View
+* Async Custom View
+
+For more information, read: http://lucasr.org/?p=3920
 
 License
 =======
