@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath 'com.android.tools.build:gradle:1.0.0'
     }
 }
 
@@ -17,7 +17,7 @@ apply plugin: 'android'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.2"
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
         minSdkVersion 14
@@ -29,7 +29,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v4:19.0.+'
+    compile 'com.android.support:support-v4:21.0.+'
     compile 'com.squareup.picasso:picasso:2.2.0'
     compile 'org.lucasr.smoothie:smoothie:0.1.0'
 }
