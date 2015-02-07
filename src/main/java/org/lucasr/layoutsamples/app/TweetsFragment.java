@@ -45,7 +45,7 @@ public class TweetsFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TweetsListView list = (TweetsListView) getView().findViewById(R.id.list);
+        TweetsListView list = (TweetsListView) view.findViewById(R.id.list);
         int presenterId = getArguments().getInt(ARG_PRESENTER_ID);
         list.setPresenter(presenterId);
     }
