@@ -28,7 +28,6 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
-import android.util.FloatMath;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View.MeasureSpec;
@@ -142,7 +141,7 @@ public class TextElement extends AbstractUIElement {
             maxWidth = Math.max(maxWidth, mLayout.getLineWidth(i));
         }
 
-        return (int) FloatMath.ceil(maxWidth);
+        return (int) Math.ceil(maxWidth);
     }
 
     private int getDesiredHeight() {
@@ -367,7 +366,7 @@ public class TextElement extends AbstractUIElement {
 
             if (boring == null || boring == UNKNOWN_BORING) {
                 if (desiredWidth < 0) {
-                    desiredWidth = (int) FloatMath.ceil(Layout.getDesiredWidth(mText, mPaint));
+                    desiredWidth = (int) Math.ceil(Layout.getDesiredWidth(mText, mPaint));
                 }
 
                 width = desiredWidth;
